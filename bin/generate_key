@@ -1,0 +1,6 @@
+#!/usr/bin/env php
+<?php
+$key = base64_encode(openssl_random_pseudo_bytes(54));
+print("[Key]: $key\n");
+$digest = password_hash($key, PASSWORD_BCRYPT, ['cost' => 10]);
+print("[Digest]: $digest\n");
