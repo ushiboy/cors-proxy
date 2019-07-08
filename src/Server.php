@@ -79,7 +79,7 @@ class Server
 
     private function isValidUrl(string $url): bool
     {
-        return filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED) !== false;
+        return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
     private function matchAllowOrigin(?string $origin): ?string
