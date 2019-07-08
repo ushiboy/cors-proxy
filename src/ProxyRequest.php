@@ -67,7 +67,8 @@ class ProxyRequest
         $headers = [];
         foreach (array_keys($server) as $key) {
             if (substr($key, 0, 5) === 'HTTP_') {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))))] = $server[$key];
+                $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                $headers[$name] = $server[$key];
             }
         }
         return $headers;

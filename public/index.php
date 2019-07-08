@@ -15,7 +15,7 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 
-$logger = new Logger('main');
+$logger = new Logger('cors-proxy');
 $logger->pushHandler(new StreamHandler('php://stderr', Logger::DEBUG));
 try {
     if (file_exists(__DIR__.'/../.env')) {

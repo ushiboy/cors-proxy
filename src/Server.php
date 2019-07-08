@@ -16,6 +16,8 @@ class Server
 
     private $httpClient;
 
+    private $logger;
+
     public function __construct(
         string $allowOrigin,
         string $authKeyDigest,
@@ -24,28 +26,34 @@ class Server
         $this->allowOriginList = $this->splitAllowOriginToList($allowOrigin);
         $this->authKeyDigest = $authKeyDigest;
         $this->httpClient = $httpClient ?: new HttpClient();
+        $this->logger = new Logger('cors-proxy');
     }
 
     public function execute(ProxyRequest $request): Response
     {
         $method = $request->getHttpMethod();
-        $matchedOrigin = $this->matchAllowOrigin($request->getOrigin());
+        $origin = $request->getOrigin();
+        $matchedOrigin = $this->matchAllowOrigin($origin);
         $accessControlHeaders = $this->getAccessControlHeaders($matchedOrigin);
         if ($method === 'OPTIONS') {
             // for preflight
             return new Response(200, $accessControlHeaders);
         }
 
-        if (!$this->authenticate($request->getAuthKey()) || $matchedOrigin === null) {
+        $authKey = $request->getAuthKey();
+        if (!$this->authenticate($authKey) || $matchedOrigin === null) {
+            $this->logger->error("auth key ($authKey) or origin ($origin) not match");
             return new Response(403, $accessControlHeaders);
         }
 
         if ($method !== 'GET') {
+            $this->logger->error("Not support method ($method)");
             return new Response(405, $accessControlHeaders);
         }
 
         $url = $request->getUrl();
         if (!$this->isValidUrl($url)) {
+            $this->logger->error("invalid url parameter ($url)");
             return new Response(400, $accessControlHeaders);
         }
         $response = $this->httpClient->requestGet($url, $request->getRequestHeaders())

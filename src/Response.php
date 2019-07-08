@@ -44,10 +44,13 @@ class Response
                 $this->body
             );
         }
+        $encodedBody = mb_convert_encoding($this->body, $toCharset, $fromCharset);
+        $encodedHeaders = $this->headers;
+        $encodedHeaders["Content-Length"] = strlen($encodedBody);
         return new self(
             $this->statusCode,
-            $this->headers,
-            mb_convert_encoding($this->body, $toCharset, $fromCharset)
+            $encodedHeaders,
+            $encodedBody
         );
     }
 
