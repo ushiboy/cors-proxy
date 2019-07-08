@@ -4,6 +4,9 @@ CORS Proxy is a proxy that relays cross-site HTTP requests and gets the response
 
 Deploy to heroku and use it.
 
+## Requirements
+
+PHP >= 7
 
 ## Usage
 
